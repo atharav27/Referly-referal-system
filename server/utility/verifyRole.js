@@ -15,11 +15,14 @@ export const verifyRole = (requiredRole) => {
         if (err) {
           return res.status(403).json({ message: "Invalid or expired token" });
         }
+console.log(decoded.role)
 
+console.log(requiredRole)
         // Check if the decoded token contains the required role
         if (decoded.role !== requiredRole) {
           return res.status(403).json({ message: "Insufficient permissions" });
         }
+        
 
         // Pass the decoded user information to the next middleware/route handler
         req.user = decoded;

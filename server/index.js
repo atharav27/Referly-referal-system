@@ -3,10 +3,12 @@ import mongoose from "mongoose";
 import userRouter from "./routes/user.route.js";
 import authRouter from "./routes/auth.route.js";
 import referalRouter from "./routes/referal.route.js"
+import adminRouter from "./routes/admin.route.js"
 // import listingRouter from "./routes/listing.route.js";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+
 // import path from "path";
 dotenv.config();
 
@@ -35,6 +37,7 @@ app.use(cookieParser());
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/referal", referalRouter);
+app.use("/api/admin", adminRouter);
 
 // Middleware for parsing JSON
 app.use(express.json());

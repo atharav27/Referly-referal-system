@@ -147,7 +147,7 @@ const Login = () => {
           <span className="">Sign up</span>
         </Link>
       </div>
-      <button onClick={extractUserRoleFromToken}>ljfhg</button>
+      
     </div>
   );
 };
