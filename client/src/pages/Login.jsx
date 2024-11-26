@@ -47,7 +47,7 @@ const Login = () => {
         setSuccessMessage(message || "Login successful!");
         setUserLogedin(true);
         if(userRole == "admin"){
-
+          navigate("/admin-dashboard");
         }else{
           navigate("/profile");
         }

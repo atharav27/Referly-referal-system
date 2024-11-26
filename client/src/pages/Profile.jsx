@@ -45,7 +45,7 @@ const ProfilePage = () => {
         // Make an API call to fetch user details
         const response = await axios.get(`/api/user/profile/${userId}`, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json",
           },
         });

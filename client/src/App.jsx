@@ -6,6 +6,7 @@ import Navbar from "./pages/Navbar";
 import Footer from "./pages/Footer";
 import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 // import About from "./pages/About";
 
 export default function App() {
@@ -17,7 +18,7 @@ export default function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/sign-in" element={<Login />} />
         <Route path="/sign-up" element={<SignUp />} />
-        <Route path="/admin-dashboard" element={<Profile />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard/>} />
         <Route path="/admin-signin" element={<Profile />} />
       </Routes>
       {/* <Footer/> */}

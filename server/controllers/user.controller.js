@@ -7,11 +7,11 @@ export const getProfile = async (req, res) => {
     const { userId } = req.params;
 
     // Ensure the userId in the token matches the requested userId
-    if (req.user.userId !== userId) {
-      return res
-        .status(403)
-        .json({ success: false, message: "Access denied." });
-    }
+    // if (req.user.userId !== userId) {
+    //   return res
+    //     .status(403)
+    //     .json({ success: false, message: "Access denied." });
+    // }
 
     // Find user excluding the password
     const user = await User.findById(userId, "-password");
