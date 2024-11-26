@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 
 import axios from "axios";
+import { AuthContext } from "@/context/authContext.jsx";
 
 const Login = () => {
   const {
@@ -19,6 +20,7 @@ const Login = () => {
   const [successMessage, setSuccessMessage] = useState(null);
   const [userLogedin, setUserLogedin] = useState(false);
   const navigate = useNavigate();
+  const { login, isAuthenticate } = useContext(AuthContext);
 
   const onSubmit = async (data) => {
     setErrorMessage(null);
@@ -46,14 +48,14 @@ const Login = () => {
         // Display success message
         setSuccessMessage(message || "Login successful!");
         setUserLogedin(true);
-        if(userRole == "admin"){
+        login(token);
+        if (userRole == "admin") {
           navigate("/admin-dashboard");
-        }else{
+        } else {
           navigate("/profile");
         }
 
         // Navigate to profile or any post-login page
-        
       } else {
         // Handle unexpected status codes
         setErrorMessage(response.data.message || "Login failed.");
@@ -143,11 +145,10 @@ const Login = () => {
 
       <div className="mt-4 text-center">
         Don't have an account?{" "}
-        <Link>
+        <Link to={"/sign-up"}>
           <span className="">Sign up</span>
         </Link>
       </div>
-      
     </div>
   );
 };

@@ -1,8 +1,9 @@
-import React, { useEffect, useId, useState } from "react";
+import React, { useEffect,useContext, useState } from "react";
 import axios from "axios";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,  } from "react-router-dom";
+import { AuthContext } from "@/context/authContext.jsx";
 
 const ProfilePage = () => {
   const [user, setUser] = useState(null);
@@ -13,6 +14,7 @@ const ProfilePage = () => {
   const [showOtpField, SetShowOtpField] = useState(false);
   const [referredUsers, setReferredUsers] = useState([]);
   const navigate = useNavigate();
+  const { logout } = useContext(AuthContext);
 
   // Function to extract userId from token
   const extractUserIdFromToken = () => {
@@ -26,7 +28,7 @@ const ProfilePage = () => {
       const payloadBase64 = token.split(".")[1]; // Extract the payload part
       const payload = JSON.parse(atob(payloadBase64));
       // const id = payload.id// Decode the Base64 string to JSON
-      console.log(payload.id, "kighsfdhgfhds")
+      console.log(payload.id, "kighsfdhgfhds");
       return payload.id; // Assuming `userId` is present in the payload
     } catch (error) {
       throw new Error("Invalid token format");
@@ -36,11 +38,10 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-       
         const token = localStorage.getItem("token");
         // console.log(token);
         const userId = extractUserIdFromToken();
-        console.log(userId,"sfhgfsdhgfd");
+        console.log(userId, "sfhgfsdhgfd");
         // console.log(userId);
         // Make an API call to fetch user details
         const response = await axios.get(`/api/user/profile/${userId}`, {
@@ -74,7 +75,6 @@ const ProfilePage = () => {
       alert(response.data.otp);
       // console.log(message)
       SetShowOtpField(true);
-      setStep("verifyOtp");
     } catch (error) {
       setMessage(error.response?.data?.message || "Error sending OTP.");
     }
@@ -83,48 +83,78 @@ const ProfilePage = () => {
   // varify otp
   const handleVerifyOtp = async () => {
     const email = user.email;
+
     console.log({ email, otp });
     try {
       const response = await axios.post("/api/auth/verify-otp", { email, otp });
       setMessage(response.data.message);
       setOtp(""); // Clear the OTP field on success
+      if (response.status == 200) {
+        alert("OTP verified successfully!");
+        window.location.reload();
+      }
     } catch (error) {
       console.error("Error verifying OTP:", error.response?.data || error);
       setMessage(error.response?.data?.message || "Error verifying OTP.");
     }
   };
 
-const handleFetchRefrals = async () => {
-  console.log("Fetching referrals...");
+  const handleFetchRefrals = async () => {
+    console.log("Fetching referrals...");
 
-  const token = localStorage.getItem("token");
-  const userId = extractUserIdFromToken(); // Extract userId from the token
+    const token = localStorage.getItem("token");
+    const userId = extractUserIdFromToken(); // Extract userId from the token
 
-  // console.log("UserId:", userId);
-  // console.log("Token:", token);
+    // console.log("UserId:", userId);
+    // console.log("Token:", token);
 
-  try {
-    setLoading(true);
-    const response = await axios.get(`/api/referal/referals/${userId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-    // console.log("Response:", response);
-    setReferredUsers(response.data.data);
-    console.log(referredUsers)
-  } catch (error) {
-    console.log("Error:", error);
-    setError(error.response?.data?.message || "Failed to fetch referred users.");
-  } finally {
-    setLoading(false);
-  }
-};
-const handleSignOut = () => {
-  localStorage.removeItem("token"); // Clear the token
-  navigate("/sign-in"); // Redirect to the login page
-};
+    try {
+      setLoading(true);
+      const response = await axios.get(`/api/referal/referals/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      // console.log("Response:", response);
+      setReferredUsers(response.data.data);
+      console.log(referredUsers);
+    } catch (error) {
+      console.log("Error:", error);
+      setError(
+        error.response?.data?.message || "Failed to fetch referred users."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteAccount = async () => {
+    try {
+      const userId = extractUserIdFromToken();
+      const response = await axios.delete(`/api/user/delete-profile/${userId}`, {
+        headers: {
+          Authorization: Bearer `${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.status === 200) {
+        localStorage.removeItem("token"); // Clear the token
+        logout();
+        alert("User deleted successfully!");
+        navigate("/sign-up"); // Redirect to the login page
+        }
+    } catch(err) {
+      alert("Unable to delete user");
+      console.log(err);
+    }
+  };
+
+  const handleSignOut = () => {
+    localStorage.removeItem("token"); // Clear the token
+    logout()
+    navigate("/sign-in"); // Redirect to the login page
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
@@ -160,17 +190,29 @@ const handleSignOut = () => {
           <p>No user data available.</p>
         )}
         <div className=" justify-between flex flex-col md:flex-row gap-2  items-start md:items-center mt-2">
-          <Button className=" bg-slate-500 text-white text-sm hover:bg-slate-600">Delete account</Button>
-          <Button className=" bg-slate-500 text-white text-sm hover:bg-slate-600" onClick={handleSignOut }>Sign Out</Button>
+          <Button className=" bg-slate-500 text-white text-sm hover:bg-slate-600" onClick={deleteAccount}>
+            Delete account
+          </Button>
+          <Button
+            className=" bg-slate-500 text-white text-sm hover:bg-slate-600"
+            onClick={handleSignOut}
+          >
+            Sign Out
+          </Button>
         </div>
       </div>
       <div className=" sm:max-w-xl  mt-5 mx-auto py-4 px-8 border rounded shadow">
-        <h4 className="font-semibold text-lg">varify yourself to get rewards</h4>
+        <h4 className="font-semibold text-lg">
+          verify yourself to get rewards
+        </h4>
         <div className="flex mt-2 flex-col md:flex-row gap-2  items-start md:items-center justify-between ">
-          <h4 className="text-md">Varify by email </h4>
+          <h4 className="text-md">Verify by email </h4>
           <div className="">
-            <Button onClick={handleSendOtp} className="w-[150px]  bg-slate-500 text-white text-sm hover:bg-slate-600">
-              Send Otp
+            <Button
+              onClick={handleSendOtp}
+              className="w-[150px]  bg-slate-500 text-white text-sm hover:bg-slate-600"
+            >
+              Send OTP
             </Button>
           </div>
         </div>
@@ -189,16 +231,24 @@ const handleSignOut = () => {
               outline: "none",
             }}
           />
-          <Button className="w-[150px] border  bg-slate-500 text-white text-sm hover:bg-slate-600" onClick={handleVerifyOtp}>
-            Varify Otp
+          <Button
+            className="w-[150px] border  bg-slate-500 text-white text-sm hover:bg-slate-600"
+            onClick={handleVerifyOtp}
+          >
+            Verify OTP
           </Button>
         </div>
       </div>
 
       <div className="sm:max-w-xl  mt-5 mx-auto  py-4 px-8 border rounded shadow">
-        <Button className=" bg-slate-500 text-white text-sm hover:bg-slate-600" onClick={handleFetchRefrals}>Referals</Button>
+        <Button
+          className=" bg-slate-500 text-white text-sm hover:bg-slate-600"
+          onClick={handleFetchRefrals}
+        >
+          Referals
+        </Button>
         <div className="w-full">
-          {referredUsers.map((data, index) =>(
+          {referredUsers.map((data, index) => (
             <div className="">{data.name}</div>
           ))}
         </div>

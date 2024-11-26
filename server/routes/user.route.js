@@ -1,5 +1,5 @@
 import express, { Router } from 'express';
-import  { getProfile } from '../controllers/user.controller.js';
+import  { getProfile , deleteUser } from '../controllers/user.controller.js';
 import { verifyToken } from '../utility/verifyToken.js';
 import { verifyRole } from '../utility/verifyRole.js';
 
@@ -8,6 +8,7 @@ import { verifyRole } from '../utility/verifyRole.js';
 const userRouter = express.Router();
 
 userRouter.get("/profile/:userId", verifyToken,verifyRole('user'),  getProfile);
+userRouter.delete('/delete-profile/:userId', verifyToken,verifyRole('user'), deleteUser);
 
 
 
