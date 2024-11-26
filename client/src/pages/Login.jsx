@@ -31,22 +31,29 @@ const Login = () => {
 
     try {
       // Send login request
-      const response = await axios.post("http://localhost:3000/api/auth/signin",
+      const response = await axios.post(
+        "http://localhost:3000/api/auth/signin",
         requestData
       );
-console.log( response)
+      console.log(response);
       if (response.status === 200) {
         const { token, message } = response.data;
 
         // Store token in localStorage
         localStorage.setItem("token", token);
-
+        const userRole = extractUserRoleFromToken();
+        console.log(userRole, "role");
         // Display success message
         setSuccessMessage(message || "Login successful!");
         setUserLogedin(true);
+        if(userRole == "admin"){
+
+        }else{
+          navigate("/profile");
+        }
 
         // Navigate to profile or any post-login page
-        navigate("/profile");
+        
       } else {
         // Handle unexpected status codes
         setErrorMessage(response.data.message || "Login failed.");
@@ -60,6 +67,21 @@ console.log( response)
       }
     } finally {
       reset(); // Reset form fields regardless of success or failure
+    }
+  };
+  const extractUserRoleFromToken = () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("Token is missing");
+    }
+
+    try {
+      const payloadBase64 = token.split(".")[1]; // Get the payload part
+      const payload = JSON.parse(atob(payloadBase64)); // Decode Base64
+
+      return payload.role;
+    } catch (error) {
+      throw new Error("Invalid token format or content");
     }
   };
 
@@ -125,6 +147,7 @@ console.log( response)
           <span className="">Sign up</span>
         </Link>
       </div>
+      <button onClick={extractUserRoleFromToken}>ljfhg</button>
     </div>
   );
 };

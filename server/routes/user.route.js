@@ -6,7 +6,7 @@ import { verifyToken } from '../utility/verifyToken.js';
 
 const userRouter = express.Router();
 
-userRouter.get("/profile/:userId", verifyToken, getProfile);
+userRouter.get("/profile/:userId", verifyToken('user'), getProfile);
 
 
 
