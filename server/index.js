@@ -29,7 +29,7 @@ mongoose
 // };
 const app = express();
 app.use(cors({
-  origin : ["https://deploy-mern.vercel.app"],
+  origin : ["https://referly-referal-system-frontend.vercel.app/"],
   methods: ["POST", "GET"], 
   credentials: true
 }
