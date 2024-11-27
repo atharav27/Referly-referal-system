@@ -30,7 +30,7 @@ const SignUp = () => {
 
     try {
       // Sending data to the backend API
-      const response = await axios.post("http://localhost:3000/api/auth/signup", requestData);
+      const response = await axios.post("/api/auth/signup", requestData);
 
       // Check for successful signup response
       if (response.status === 201) {

@@ -44,7 +44,7 @@ const ProfilePage = () => {
         
         
         // Make an API call to fetch user details
-        const response = await axios.get(`/api/user/profile/${userId}`, {
+        const response = await axios.get(`https://referly-referal-system-api.vercel.app/api/user/profile/${userId}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json",
