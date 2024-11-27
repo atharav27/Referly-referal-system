@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const SignUp = () => {
   const {
@@ -81,7 +81,7 @@ const SignUp = () => {
               id="name"
               placeholder="John Doe"
               {...register("name", { required: "Name is required" })}
-              className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
+              className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm outline-none sm:text-sm ${
                 errors.name ? "border-red-500" : ""
               }`}
             />
@@ -109,7 +109,7 @@ const SignUp = () => {
                   message: "Invalid email address",
                 },
               })}
-              className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
+              className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm outline-none sm:text-sm ${
                 errors.email ? "border-red-500" : ""
               }`}
             />
@@ -139,7 +139,7 @@ const SignUp = () => {
                   message: "Password must be at least 6 characters",
                 },
               })}
-              className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
+              className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm outline-none sm:text-sm ${
                 errors.password ? "border-red-500" : ""
               }`}
             />
@@ -163,7 +163,7 @@ const SignUp = () => {
               id="referralCode"
               placeholder="REF123"
               {...register("referralCode")}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm outline-none sm:text-sm"
             />
           </div>
 
@@ -173,12 +173,19 @@ const SignUp = () => {
             disabled={isSubmitting}
             className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
               isSubmitting ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
-            } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
+            } focus:outline-none focus:ring-2 focus:ring-offset-2 `}
           >
             {isSubmitting ? "Signing up..." : "Sign Up"}
           </Button>
         </form>
+        <div className="mt-4 text-center">
+        Already have an account?
+        <Link to={"/sign-in"}>
+          <span className="">Sign In</span>
+        </Link>
       </div>
+      </div>
+      
     </div>
   );
 };

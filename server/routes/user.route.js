@@ -8,7 +8,7 @@ import { verifyRole } from '../utility/verifyRole.js';
 const userRouter = express.Router();
 
 userRouter.get("/profile/:userId", verifyToken,verifyRole('user'),  getProfile);
-userRouter.delete('/delete-profile/:userId', verifyToken,verifyRole('user'), deleteUser);
+userRouter.delete('/delete-profile/:userId', verifyToken, verifyRole('user'), deleteUser);
 
 
 

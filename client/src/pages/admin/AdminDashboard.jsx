@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { IoIosNotificationsOutline } from "react-icons/io";
-import { FaUser } from "react-icons/fa";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import axios from "axios";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FaRegUser } from "react-icons/fa";
@@ -11,23 +19,22 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-
-const tableData = [
-  { id: 1, name: "John Doe", age: 28, occupation: "Engineer" },
-  { id: 2, name: "Jane Smith", age: 34, occupation: "Designer" },
-  { id: 3, name: "Sam Wilson", age: 25, occupation: "Developer" },
-];
+import AdminNavBar from "./AdminNavBar";
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [error, setError] = useState(null);
+  const [allUsers, setAllUsers] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [filterUsers, setFilterUsers] = useState([])
-  const successfulUsers = []
+  const [verifiedUsers, setVerifiedUsers] = useState([]); // Verified users
+  const [unverifiedUsers, setUnverifiedUsers] = useState([]); // Unverified users
+  const [searchTerm, setSearchTerm] = useState("");
+  // const [filterUsers, setFilterUsers] = useState([])
+  // const successfulUsers = []
   useEffect(() => {
     const fetchUsers = async () => {
       const token = localStorage.getItem("token");
-      // console.log(token)
+     
       try {
         const response = await axios.get("/api/admin/users", {
           headers: {
@@ -35,17 +42,20 @@ const AdminDashboard = () => {
           },
         });
 
-        // console.log(response.data, "jfgsdrg");
+      
 
         if (response.status === 200) {
-          setUsers(response.data.data); // Set the fetched users with referral data
+          setUsers(response.data.data);
+          setAllUsers(response.data.data);
+          filterVerifiedUsers(response.data.data); // Filter verified users
+          filterUnverifiedUsers(response.data.data); // Filter unverified users
         } else {
           setError(response.data.message || "Failed to load users");
-          // console.log(error,"atah")
+          
         }
       } catch (err) {
         setError("Failed to load users");
-        // console.log(err, "ohg")
+      
       } finally {
         setLoading(false);
       }
@@ -53,122 +63,301 @@ const AdminDashboard = () => {
 
     fetchUsers();
   }, []);
+  const filterVerifiedUsers = (users) => {
+    const verified = users.filter((user) => user.isVerified === true);
+    setVerifiedUsers(verified);
+  };
 
-//   const handlefilter = (statusType) => {
-// if(statusType === "successful"){
-//   // users?.map((user) => user.isVerified === "true" && successfulUsers.push(user)) 
-//   // setFilterUsers(successfulUsers)
-//   const data = users.filter((user) => user.isVerified === true)
-//   setFilterUsers
-// }
-//   }
+  const filterUnverifiedUsers = (users) => {
+    const unverified = users.filter((user) => user.isVerified === false);
+    setUnverifiedUsers(unverified);
+  };
 
-  console.log(users);
+  const handleFilter = (statusType) => {
+    if (statusType === "verified") {
+      setUsers(verifiedUsers);
+    } else if (statusType === "unverified") {
+      setUsers(unverifiedUsers);
+    }
+  };
+  // Search function to filter users by name or email
+  const handleSearch = (e) => {
+    const searchQuery = e.target.value.toLowerCase();
+    setSearchTerm(searchQuery);
+
+    if (searchQuery === "") {
+      // If the search query is empty, reset to the full list of users
+      setUsers(allUsers);
+    } else {
+      // Filter the users based on search term
+      const filteredUsers = users.filter(
+        (user) =>
+          user.name.toLowerCase().includes(searchQuery) ||
+          user.email.toLowerCase().includes(searchQuery)
+      );
+      setUsers(filteredUsers); // Update users with filtered results
+    }
+  };
+
+  const deleteUser = async (userId) => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axios.delete(`/api/admin/users/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        // Remove the deleted user from the list
+        setUsers(users.filter(user => user._id !== userId));
+        alert("user deletd succesfully")
+      }
+    } catch (err) {
+      console.error("Failed to delete user", err);
+    }
+  };
+
+  
   return (
     <div className="">
-      <div className="w-full py-3 px-10 flex justify-between bg-gray-500">
-        <h1 className="text-lg  md:text-xl lg:text-3xl font-bold text-white text-start">
-          <Link to={"/admin-dashboard"}> Referly</Link>
-        </h1>
-        <div className="flex gap-2 items-end">
-          <div className="">
-            <IoIosNotificationsOutline size={30} />
-          </div>
-          <div className=" ">
-            <FaUser size={30} className="text-gray-200" />
-          </div>
-          <div className="text-sm sm:text-md  md:text-lg text-gray-200 border-b-2">
-            Admin name
-          </div>
-        </div>
+      <AdminNavBar />
 
-        {/* <div className=" px-2 sm:px-4">
-          <h1>Users</h1>
-          <h1>Users</h1>
-        </div> */}
-      </div>
-      <div className="mt-8 mx-20">
+      <div className="mt-24 mx-20">
         <span className="text-sm sm:text-md font-semibold md:text-lg lg:text-xl  px-2   py-2 border-b-2 ">
           Dashboard
         </span>
       </div>
       <div className="mx-20 mt-10  ">
-        <div className="table-container">
-          <div className="flex text-lg my-1 py-1 items-center justify-center">
-            <span className="border-b-2 py-2 font-semibold">Users</span>
-          </div>
-          <div className="justify-between flex gap-2  py-2">
-          <input type="text" placeholder="search..." className="border-2 outline-none  px-2 py-1 w-[300px]" />
-            <div className="flex gap-2 ">
-              {/* onClick={handlefilter("successful")} */}
-              <button className="px-2 py-1 bg-gray-500 text-white" >
-                Successsful
-              </button>
-              <button className="px-2 py-1 bg-gray-500 text-white" >
-              {/* onClick={handlefilter("pending")} */}
-                Pending
-              </button>
-            </div>
-          </div>
-          <table style={{ borderCollapse: "collapse", width: "100%" }}>
-            <thead className="">
-              <tr className="bg-[#f4f4f4] ">
-                <th>S.No.</th>
-                <th className="text-start">Name</th>
-                <th className="text-start">Email</th>
-                <th className="text-start">Referal Code</th>
-                <th className="text-start">Referal Status</th>
-                <th className="text-start">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((data, index) => (
-                <tr key={index} className="border-2 m-6 ">
-                  <td className="">{index + 1}</td>
+        <div className="table-container mb-10">
+          <Tabs defaultValue="account">
+            <TabsList className="flex text-lg   py-1 items-center justify-center">
+              <TabsTrigger value="account">
+                <span className="  text-lg font-semibold">Users</span>
+              </TabsTrigger>
+              <TabsTrigger value="password">
+                <span className=" text-lg font-semibold">Referals</span>
+              </TabsTrigger>
+            </TabsList>
 
-                  <td className="">{data.name}</td>
-                  <td>{data.email}</td>
-                  <td>{data.referralCode}</td>
-                  <td>
-                    {data.isVerified == true ? (
-                      <span className="text-green-400">Successful</span>
-                    ) : (
-                      <span className="text-red-500">Pending</span>
-                    )}
-                  </td>
-                  <td className="flex gap-4 items-center py-1">
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <button>
-                            <RiDeleteBin6Line
-                              size={20}
-                              className="text-red-400"
-                            />
-                          </button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p className="text-red-500">Delete User</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <button>
-                            <FaRegUser size={15} className="" />
-                          </button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p className="">View User</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+            {/* <div className="flex text-lg my-1 py-1 items-center justify-center">
+              <span className="border-b-2 py-2 font-semibold">Users</span>
+            </div> */}
+            <div className="justify-between flex gap-2  py-2">
+              <input
+                type="text"
+                onChange={handleSearch}
+                placeholder="search..."
+                className="border-2 outline-none  px-2 py-1 w-[300px]"
+              />
+              <div className="flex gap-2 ">
+                <button
+                  className="px-2 py-1 bg-gray-500 text-white"
+                  onClick={() => setUsers(allUsers)}
+                >
+                  All
+                </button>
+                {/* onClick={handlefilter("successful")} */}
+                <button
+                  className="px-2 py-1 bg-gray-500 text-white"
+                  onClick={() => handleFilter("verified")}
+                >
+                  Successsful
+                </button>
+                <button
+                  className="px-2 py-1 bg-gray-500 text-white"
+                  onClick={() => handleFilter("unverified")}
+                >
+                  {/* onClick={handlefilter("pending")} */}
+                  Pending
+                </button>
+              </div>
+            </div>
+            
+            <TabsContent value="account" >
+              <Table style={{ borderCollapse: "collapse", width: "100%" }}>
+                <TableCaption>A list of all Users</TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="px-4 py-1 border border-gray-300">
+                      {" "}
+                      S.No.
+                    </TableHead>
+                    <TableHead className="px-4 py-1 border border-gray-300">
+                      Name
+                    </TableHead>
+                    <TableHead className="px-4 py-1 border border-gray-300">
+                      Email
+                    </TableHead>
+                    <TableHead className="px-4 py-1 border border-gray-300">
+                      Referal Code
+                    </TableHead>
+                    <TableHead className="px-4 py-1 border border-gray-300">
+                      Referal Status
+                    </TableHead>
+                    <TableHead className="px-4 py-1 border border-gray-300">
+                      Actions
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {users.map((data, index) => (
+                    <TableRow key={data._id} className=" m-6 ">
+                      <TableCell className="px-4 py-1 border border-gray-300">
+                        {index + 1}
+                      </TableCell>
+                      <TableCell className="px-4 py-1 border border-gray-300">
+                        {data.name}
+                      </TableCell>
+                      <TableCell className="px-4 py-1 border border-gray-300">
+                        {data.email}
+                      </TableCell>
+                      <TableCell className="px-4 py-1 border border-gray-300">
+                        {data.referralCode}
+                      </TableCell>
+                      <TableCell className="px-4 py-1 border border-gray-300">
+                        {data.isVerified == true ? (
+                          <span className="text-green-400">Successful</span>
+                        ) : (
+                          <span className="text-red-500">Pending</span>
+                        )}
+                      </TableCell>
+                      <TableCell className="flex gap-4 items-center py-2 px-4  border border-gray-300">
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <div>
+                                <RiDeleteBin6Line
+                                  size={20}
+                                  className="text-red-400"
+                                  onClick={() => deleteUser(data._id)}
+                                />
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="text-red-500">Delete User</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                        {/* <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Link to={`/dashboard-user/${data._id}`}>
+                                <div>
+                                  <FaRegUser size={15} className="" />
+                                </div>
+                              </Link>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <div className="">View User</div>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider> */}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TabsContent>
+            <TabsContent value="password">
+              <Table style={{ borderCollapse: "collapse", width: "100%" }}>
+                <TableCaption>A list of all Referals</TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="px-4 py-1 border border-gray-300">
+                      {" "}
+                      S.No.
+                    </TableHead>
+                    <TableHead className="px-4 py-1 border border-gray-300">
+                      Name
+                    </TableHead>
+                    <TableHead className="px-4 py-1 border border-gray-300">
+                      Rewards
+                    </TableHead>
+                    <TableHead className="px-4 py-1 border border-gray-300">
+                      Referee's
+                    </TableHead>
+                    {/* <TableHead className="px-4 py-1 border border-gray-300">
+                      
+                    </TableHead> */}
+                    {/* <TableHead className="px-4 py-1 border border-gray-300">
+                      Actions
+                    </TableHead> */}
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {users.map((data, index) => (
+                    <TableRow key={data._id} className=" m-6 ">
+                      <TableCell className="px-4 py-1 border border-gray-300">
+                        {index + 1}
+                      </TableCell>
+                      <TableCell className="px-4 py-1 border border-gray-300">
+                        {data.name}
+                      </TableCell>
+                      <TableCell className="px-4 py-1 border border-gray-300">
+                        {data.rewards}
+                      </TableCell>
+                      <TableCell className="px-4 py-1 border border-gray-300">
+                        {data.referrals &&
+                        Array.isArray(data.referrals) &&
+                        data.referrals.length > 0 ? (
+                          data.referrals.map((referral, index) => (
+                            <span key={index}>
+                              {/* Check if the referral object and refereeName exist */}
+                              {referral && referral.refereeName
+                                ? referral.refereeName
+                                : "Unknown"},
+                                <span className="ml-2"></span>
+                            </span>
+                          ))
+                        ) : (
+                          <div>No referrals</div>
+                        )}
+                      </TableCell>
+                      {/* <TableCell className="px-4 py-1 border border-gray-300">
+                        {data.isVerified == true ? (
+                          <span className="text-green-400">Successful</span>
+                        ) : (
+                          <span className="text-red-500">Pending</span>
+                        )}
+                      </TableCell> */}
+                      {/* <TableCell className="flex gap-4 items-center py-2 px-4  border border-gray-300">
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <div>
+                                <RiDeleteBin6Line
+                                  size={20}
+                                  className="text-red-400"
+                                />
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="text-red-500">Delete User</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Link to={`/dashboard-user/${data._id}`}>
+                                <div>
+                                  <FaRegUser size={15} className="" />
+                                </div>
+                              </Link>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <div className="">View User</div>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </TableCell> */}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </div>

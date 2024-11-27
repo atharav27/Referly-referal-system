@@ -23,12 +23,17 @@ mongoose
   .catch((error) => {
     console.error("Connection failed!", error);
   });
-const corsOptions = {
-  origin: "http://localhost:5173", // Replace with your frontend's origin
-  credentials: true, // Allows cookies to be sent
-};
+// const corsOptions = {
+//   origin: "http://localhost:5173", // Replace with your frontend's origin
+//   credentials: true, // Allows cookies to be sent
+// };
 const app = express();
-app.use(cors(corsOptions));
+app.use(cors({
+  origin : ["https://deploy-mern.vercel.app"],
+  methods: ["POST", "GET"], 
+  credentials: true
+}
+));
 
 app.use(express.json());
 app.use(cookieParser());

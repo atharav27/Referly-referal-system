@@ -5,7 +5,7 @@ import { Navigate } from "react-router-dom";
 import Profile from "./pages/Profile";
 import Home from "./pages/Home";
 import Navbar from "./pages/Navbar";
-import Footer from "./pages/Footer";
+// import Footer from "./pages/Footer";
 import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -18,9 +18,8 @@ export default function App() {
   useEffect(() => {
     // Check if a token exists in local storage or cookies
     const storedToken = localStorage.getItem("token"); // Change this to your token name
-    console.log(isAuthenticated);
+
     if (storedToken) {
-      // Validate the token (e.g., verify its signature on the server)
       // If the token is valid, log the user in with the token
       login(storedToken);
     } else {
@@ -35,7 +34,10 @@ export default function App() {
   return (
     <div className="">
       <Routes>
-        <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route
+          path="/admin-dashboard"
+          element={!isAuthenticated ? <Login /> : <AdminDashboard />}
+        />
       </Routes>
 
       {/* Conditionally render Navbar */}
@@ -43,16 +45,19 @@ export default function App() {
 
       <div>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route
+            path="/"
+            element={isAuthenticated ? <Profile /> : <SignUp />}
+          />
+
           <Route
             path="/profile"
-            element={
-              !isAuthenticated ? <Login /> : <Profile/>
-            }
+            element={!isAuthenticated ? <Login /> : <Profile />}
           />
-          <Route path="/sign-in" element={<Login />} />
-          <Route path="/sign-up" element={<SignUp />} />
-          <Route path="/admin-signin" element={<Profile />} />
+          <Route
+            path="/sign-in"
+            element={isAuthenticated ? <Profile /> : <Login />}
+          />
         </Routes>
         {/* <Footer /> */}
       </div>

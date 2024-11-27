@@ -1,7 +1,6 @@
 import User from "../models/user.modal.js"; // Adjust path as needed
 // import bcryptjs from "bcryptjs";
 
-
 export const getProfile = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -29,19 +28,30 @@ export const getProfile = async (req, res) => {
       .json({ success: false, message: "Server error. Please try again." });
   }
 };
-
 export const deleteUser = async (req, res) => {
-  const { userId } = req.params;
+  const { id } = req.params; // Extract user ID from the request params
 
   try {
-    const user = await User.findByIdAndDelete(userId);
+    // Find the user by ID and delete it
+    const deletedUser = await User.findByIdAndDelete(id);
 
-    if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found' });
+    if (!deletedUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
     }
 
-    res.status(200).json({ success: true, message: 'User deleted successfully' });
+    res.status(200).json({
+      success: true,
+      message: "User deleted successfully",
+    });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Failed to delete user', error });
-  }
+    // console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to delete user",
+      error: error.message,
+    });
+  }
 };

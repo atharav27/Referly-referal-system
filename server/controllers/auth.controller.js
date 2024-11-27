@@ -190,7 +190,7 @@ export const sendVerificationOTP = async (req, res) => {
       `, // HTML body
     });
 
-    console.log("OTP email sent: %s", info.messageId);
+    // console.log("OTP email sent: %s", info.messageId);
     res.status(200).json({
       success: true,
       message: "OTP sent successfully!",

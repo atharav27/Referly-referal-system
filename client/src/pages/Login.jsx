@@ -37,14 +37,14 @@ const Login = () => {
         "http://localhost:3000/api/auth/signin",
         requestData
       );
-      console.log(response);
+     
       if (response.status === 200) {
         const { token, message } = response.data;
 
         // Store token in localStorage
         localStorage.setItem("token", token);
         const userRole = extractUserRoleFromToken();
-        console.log(userRole, "role");
+      
         // Display success message
         setSuccessMessage(message || "Login successful!");
         setUserLogedin(true);
@@ -145,7 +145,7 @@ const Login = () => {
 
       <div className="mt-4 text-center">
         Don't have an account?{" "}
-        <Link to={"/sign-up"}>
+        <Link to={"/"}>
           <span className="">Sign up</span>
         </Link>
       </div>

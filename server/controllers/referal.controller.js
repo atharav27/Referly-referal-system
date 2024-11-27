@@ -8,7 +8,7 @@ export const getReferredUsers = async (req, res, next) => {
     // Find referrals where the user is the referrer
     const referrals = await Referral.find({ referrerId: userId }).populate(
       "refereeId",
-      "name email rewards"
+      "name email rewards isVerified"
     );
 
     // Extract the referred user details
@@ -19,6 +19,7 @@ export const getReferredUsers = async (req, res, next) => {
           name: ref.refereeId.name,
           email: ref.refereeId.email,
           rewards: ref.refereeId.rewards,
+          isVerified: ref.refereeId.isVerified,
           createdAt: ref.createdAt,
         };
       }
