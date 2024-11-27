@@ -1,11 +1,10 @@
 import React, { useContext, useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
-// import { useNavigate } from "react-router-dom";
-import { Navigate } from "react-router-dom";
+
 import Profile from "./pages/Profile";
-import Home from "./pages/Home";
+
 import Navbar from "./pages/Navbar";
-// import Footer from "./pages/Footer";
+
 import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
 import AdminDashboard from "./pages/admin/AdminDashboard";
