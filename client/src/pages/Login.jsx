@@ -35,7 +35,7 @@ const Login = () => {
     try {
       // Send login request
       const response = await axiosInstance.post(
-        "/auth/signin",
+        "/api/auth/signin",
         requestData
       );
      

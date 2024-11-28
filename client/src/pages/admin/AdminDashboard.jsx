@@ -37,7 +37,7 @@ const AdminDashboard = () => {
       const token = localStorage.getItem("token");
      
       try {
-        const response = await axiosInstance.get("/admin/users", {
+        const response = await axiosInstance.get("/api/admin/users", {
           headers: {
             Authorization: `Bearer ${token}`,
           },  
@@ -103,7 +103,7 @@ const AdminDashboard = () => {
   const deleteUser = async (userId) => {
     const token = localStorage.getItem("token");
     try {
-      const response = await axiosInstance.delete(`/admin/users/${userId}`, {
+      const response = await axiosInstance.delete(`/api/admin/users/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
