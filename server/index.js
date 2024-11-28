@@ -31,13 +31,13 @@ const allowedOrigins = [
   "https://referly-referal-system-frontend.vercel.app",
   "http://localhost:5173", // for local development
 ];
-const app = express();
+
 app.use(cors({
   origin: allowedOrigins,
   methods: ["POST", "GET"],
   credentials: true,
 }));
-
+const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
