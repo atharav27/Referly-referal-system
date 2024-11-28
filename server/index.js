@@ -27,13 +27,13 @@ mongoose
 //   origin: "http://localhost:5173", // Replace with your frontend's origin
 //   credentials: true, // Allows cookies to be sent
 // };
-const allowedOrigins = [
-  "https://referly-referal-system-frontend.vercel.app",
-  "http://localhost:5173", // for local development
-];
+// const allowedOrigins = [
+//   "https://referly-referal-system-frontend.vercel.app",
+//   "http://localhost:5173", // for local development
+// ];
 const app = express();
 app.use(cors({
-  origin: allowedOrigins,
+  origin: "https://referly-referal-system-frontend.vercel.app",
   methods: ["POST", "GET"],
   credentials: true,
 }));
