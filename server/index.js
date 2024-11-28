@@ -28,7 +28,7 @@ mongoose
 //   credentials: true, // Allows cookies to be sent
 // };
 const allowedOrigins = [
-  "https://referly-referal-system-frontend.vercel.app",
+  "https://referly-referal-system-api.vercel.app/",
   "http://localhost:5173", // for local development
 ];
 
