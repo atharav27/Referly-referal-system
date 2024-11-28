@@ -9,7 +9,7 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
-
+const app = express();
 // import path from "path";
 dotenv.config();
 
@@ -37,7 +37,7 @@ app.use(cors({
   methods: ["POST", "GET"],
   credentials: true,
 }));
-const app = express();
+
 app.use(express.json());
 app.use(cookieParser());
 
