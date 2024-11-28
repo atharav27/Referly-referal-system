@@ -5,8 +5,9 @@ import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import axiosInstance from '@/utils/axiosInstance';
 
-import axios from "axios";
+// import axios from "axios";
 import { AuthContext } from "@/context/authContext.jsx";
 
 const Login = () => {
@@ -33,8 +34,8 @@ const Login = () => {
 
     try {
       // Send login request
-      const response = await axios.post(
-        "/api/auth/signin",
+      const response = await axiosInstance.post(
+        "/auth/signin",
         requestData
       );
      

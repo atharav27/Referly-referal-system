@@ -5,6 +5,7 @@ import axios from "axios";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useNavigate, Link } from "react-router-dom";
+import axiosInstance from "@/lib/axiosInstance";
 
 const SignUp = () => {
   const {
@@ -30,7 +31,7 @@ const SignUp = () => {
 
     try {
       // Sending data to the backend API
-      const response = await axios.post("/api/auth/signup", requestData);
+      const response = await axiosInstance.post("/auth/signup", requestData);
 
       // Check for successful signup response
       if (response.status === 201) {

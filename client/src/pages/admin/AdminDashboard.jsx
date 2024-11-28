@@ -20,6 +20,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import AdminNavBar from "./AdminNavBar";
+import axiosInstance from "@/lib/axiosInstance";
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
@@ -36,10 +37,10 @@ const AdminDashboard = () => {
       const token = localStorage.getItem("token");
      
       try {
-        const response = await axios.get("/api/admin/users", {
+        const response = await axiosInstance.get("/admin/users", {
           headers: {
             Authorization: `Bearer ${token}`,
-          },
+          },  
         });
 
       
@@ -102,7 +103,7 @@ const AdminDashboard = () => {
   const deleteUser = async (userId) => {
     const token = localStorage.getItem("token");
     try {
-      const response = await axios.delete(`/api/admin/users/${userId}`, {
+      const response = await axiosInstance.delete(`/admin/users/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "@/context/authContext.jsx";
+import axiosInstance from "@/lib/axiosInstance";
 
 const ProfilePage = () => {
   const [user, setUser] = useState(null);
@@ -44,7 +45,7 @@ const ProfilePage = () => {
         
         
         // Make an API call to fetch user details
-        const response = await axios.get(`https://referly-referal-system-api.vercel.app/api/user/profile/${userId}`, {
+        const response = await axiosInstance.get(`/user/profile/${userId}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json",
@@ -67,7 +68,7 @@ const ProfilePage = () => {
     const email = user.email;
     
     try {
-      const response = await axios.post("/api/auth/send-verification-otp", {
+      const response = await axiosInstance.post("/auth/send-verification-otp", {
         email,
       });
     
@@ -86,7 +87,7 @@ const ProfilePage = () => {
 
    
     try {
-      const response = await axios.post("/api/auth/verify-otp", { email, otp });
+      const response = await axiosInstance.post("/auth/verify-otp", { email, otp });
       setMessage(response.data.message);
       setOtp(""); // Clear the OTP field on success
       if (response.status == 200) {
@@ -108,7 +109,7 @@ const ProfilePage = () => {
  
     try {
       setLoading(true);
-      const response = await axios.get(`/api/referal/referals/${userId}`, {
+      const response = await axiosInstancestance.get(`/referal/referals/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
