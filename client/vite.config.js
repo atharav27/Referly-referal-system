@@ -12,7 +12,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:3000', 
+        target: 'https://referly-referal-system-api.vercel.app/', // vercel backend url
         changeOrigin: true,
         secure: false,
       },
