@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import axiosInstance from '@/utils/axiosInstance';
+import axiosInstance from '../lib/axiosInstance.js';
 
 // import axios from "axios";
 import { AuthContext } from "@/context/authContext.jsx";

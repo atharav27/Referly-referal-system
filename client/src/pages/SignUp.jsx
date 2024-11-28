@@ -1,11 +1,11 @@
 // src/pages/Signup.jsx
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import axios from "axios";
+// import axios from "axios";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useNavigate, Link } from "react-router-dom";
-import axiosInstance from "@/lib/axiosInstance";
+import axiosInstance from "../lib/axiosInstance.js";
 
 const SignUp = () => {
   const {

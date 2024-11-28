@@ -20,7 +20,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import AdminNavBar from "./AdminNavBar";
-import axiosInstance from "@/lib/axiosInstance";
+import axiosInstance from "../../lib/axiosInstance.js";
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);

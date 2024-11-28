@@ -12,6 +12,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { AuthContext } from "@/context/authContext";
+import axiosInstance from "../../lib/axiosInstance.js";
 
 const AdminNavBar = () => {
   const [admins, setAdmins] = useState([]);
@@ -21,7 +22,7 @@ const AdminNavBar = () => {
     const getAdmins = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("/api/admin/admin", {
+        const response = await axiosInstance.get("/api/admin/admin", {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",

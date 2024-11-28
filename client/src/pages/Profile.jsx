@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "@/context/authContext.jsx";
-import axiosInstance from "@/lib/axiosInstance";
+import axiosInstance from "../lib/axiosInstance.js";
 
 const ProfilePage = () => {
   const [user, setUser] = useState(null);
