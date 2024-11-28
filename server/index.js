@@ -8,7 +8,7 @@ import adminRouter from "./routes/admin.route.js";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import rateLimit from 'express-rate-limit';
+// import rateLimit from 'express-rate-limit';
 
 // import path from "path";
 dotenv.config();
@@ -38,11 +38,11 @@ app.use(cors({
   credentials: true,
 }));
 
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
-});
-app.use(limiter);
+// const limiter = rateLimit({
+//   windowMs: 15 * 60 * 1000, // 15 minutes
+//   max: 100, // Limit each IP to 100 requests per windowMs
+// });
+// app.use(limiter);
 
 app.use(express.json());
 app.use(cookieParser());
