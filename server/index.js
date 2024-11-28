@@ -8,7 +8,7 @@ import adminRouter from "./routes/admin.route.js";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import rateLimit from 'express-rate-limit';
+
 
 // import path from "path";
 dotenv.config();
@@ -27,39 +27,25 @@ mongoose
 //   origin: "http://localhost:5173", // Replace with your frontend's origin
 //   credentials: true, // Allows cookies to be sent
 // };
-// const allowedOrigins = [
-//   "https://referly-referal-system-frontend.vercel.app",
-//   "http://localhost:5173", // for local development
-// ];
-
-
+const allowedOrigins = [
+  "https://referly-referal-system-frontend.vercel.app",
+  "http://localhost:5173", // for local development
+];
 const app = express();
 app.use(cors({
-  origin: "https://referly-referal-system-frontend.vercel.app",
+  origin: allowedOrigins,
   methods: ["POST", "GET"],
   credentials: true,
 }));
-
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
-});
-app.use(limiter);
-
-const dbLimiter = rateLimit({
-  windowMs: 10 * 60 * 1000, // 10 minutes
-  max: 50, // Limit each IP to 50 requests per windowMs
-});
-
 
 app.use(express.json());
 app.use(cookieParser());
 
 //routes
-app.use("/api/user", dbLimiter, userRouter);
-app.use("/api/auth", dbLimiter, authRouter);
-app.use("/api/referal", dbLimiter, referalRouter);
-app.use("/api/admin", dbLimiter, adminRouter);
+app.use("/api/user", userRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/referal", referalRouter);
+app.use("/api/admin", adminRouter);
 
 // Middleware for parsing JSON
 app.use(express.json());
