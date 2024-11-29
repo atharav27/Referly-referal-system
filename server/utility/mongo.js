@@ -27,7 +27,7 @@ const connectToDatabase = async () => {
   try {
     // Use the Mongoose connect method to connect to the database
     await mongoose.connect(url, {
-      useNewUrlParser: true,
+      // useNewUrlParser: true,
       // useUnifiedTopology: true,
       serverSelectionTimeoutMS: 5000, // Timeout after 5 seconds if no servers are found
     });
