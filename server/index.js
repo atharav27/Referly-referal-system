@@ -60,4 +60,4 @@ app.use((err, req, res, next) => {
 });
 
 // Export serverless handler
-export const handler = serverless(app); // Correct export for ESM
+export default serverless(app); 
