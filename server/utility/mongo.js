@@ -5,7 +5,7 @@ dotenv.config(); // Ensure environment variables are loaded at the very beginnin
 let isConnected = false; // Variable to track connection status
 
 // Get the MongoDB URI from environment variables
-const url = process.env.MONGO_URI;
+const url =process.env.MONGO_URI;
 console.log("MongoDB URI:", url); // Log to check if it's being loaded
 
 // Check if MONGO_URI is not defined
