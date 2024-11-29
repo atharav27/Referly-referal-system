@@ -16,20 +16,23 @@ const app = express();
 
 // Connect to MongoDB
 connectToDatabase();
-
-// CORS configuration for allowed origins
 const allowedOrigins = [
-  "https://referly-referal-system-frontend.vercel.app", // Frontend URL
-  "http://localhost:5173", // Local dev URL (if applicable)
+  "https://referly-referal-system-frontend.vercel.app",
+  "http://localhost:5173",
+  // Add your frontend's exact deployment URL
 ];
 
-app.use(
-  cors({
-    origin: allowedOrigins,
-    methods: ["POST", "GET", "PUT", "DELETE"],
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: function(origin, callback){
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ["POST", "GET", "PUT", "DELETE"],
+  credentials: true,
+}));
 
 app.use(express.json());
 app.use(cookieParser());
@@ -60,6 +63,6 @@ app.use((err, req, res, next) => {
 });
 
 // Wrap the app with serverless-http for Vercel deployment
- const handler = serverless(app);
+const handler = serverless(app);
 
- export default handler;
+export default handler;
