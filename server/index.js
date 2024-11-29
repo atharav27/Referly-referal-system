@@ -4,25 +4,19 @@ import userRouter from "./routes/user.route.js";
 import authRouter from "./routes/auth.route.js";
 import referalRouter from "./routes/referal.route.js";
 import adminRouter from "./routes/admin.route.js";
+import {connectToDatabase} from "./utility/mongo.js"
 // import listingRouter from "./routes/listing.route.js";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import serverless from "serverless-http";
+
 
 const app = express();
 // import path from "path";
 dotenv.config();
 
-//connection to database
-const MONGO_URI = process.env.MONGO_URI || "your-default-uri";
-mongoose
-  .connect(MONGO_URI)
-  .then(() => {
-    console.log("Connected to database!");
-  })
-  .catch((error) => {
-    console.error("Connection failed!", error);
-  });
+connectToDatabase();
 // const corsOptions = {
 //   origin: "http://localhost:5173", // Replace with your frontend's origin
 //   credentials: true, // Allows cookies to be sent
@@ -74,3 +68,4 @@ app.listen(PORT, () => {
 });
 
 export default app;
+export const handler = serverless(app);
