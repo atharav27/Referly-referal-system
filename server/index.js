@@ -76,5 +76,5 @@ app.get("/", (req, res) => {
   res.send("Welcome to the Referly API Server!");
 });
 
-// Serverless Handler
+// Export the serverless handler function
 export const handler = serverless(app);
