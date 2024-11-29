@@ -1,14 +1,22 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-dotenv.config();
+dotenv.config(); // Ensure environment variables are loaded at the very beginning
 
-let isConnected; // Variable to track connection status
+let isConnected = false; // Variable to track connection status
 
-// Define and export the function
+// Get the MongoDB URI from environment variables
+const url = process.env.MONGO_URI;
+console.log("MongoDB URI:", url); // Log to check if it's being loaded
+
+// Check if MONGO_URI is not defined
+if (!url) {
+  console.error("MONGO_URI is not defined in .env file");
+  throw new Error("MONGO_URI is not defined in .env file");
+}
+
+// Define and export the connection function
 const connectToDatabase = async () => {
-  mongoose.set("strictQuery", true);
-  const url = process.env.MONGO_URI;
-  if (!url) throw new Error("MONGO_URI is not defined in .env file");
+  mongoose.set("strictQuery", true); // Mongoose v6+ use this option
 
   // If already connected, return the existing connection
   if (isConnected) {
@@ -21,7 +29,7 @@ const connectToDatabase = async () => {
     await mongoose.connect(url, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 5000,
+      serverSelectionTimeoutMS: 5000, // Timeout after 5 seconds if no servers are found
     });
     isConnected = true; // Update the connection status
     console.log("Connected to Database");

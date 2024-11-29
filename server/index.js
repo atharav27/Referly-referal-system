@@ -6,16 +6,16 @@ import referalRouter from "./routes/referal.route.js";
 import adminRouter from "./routes/admin.route.js";
 import connectToDatabase from "./utility/mongo.js";
 
-// import listingRouter from "./routes/listing.route.js";
-import dotenv from "dotenv";
+
+  
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import serverless from "serverless-http";
-
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
-// import path from "path";
-dotenv.config();
+
 
 connectToDatabase();
 // const corsOptions = {
