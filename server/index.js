@@ -23,15 +23,17 @@ connectToDatabase();
 //   credentials: true, // Allows cookies to be sent
 // };
 const allowedOrigins = [
-  "https://referly-referal-system-frontend.vercel.app", // Your frontend URL
-  "http://localhost:5173", // Local development (if applicable)
+  "https://referly-referal-system-frontend.vercel.app", // Production frontend
+  "http://localhost:5173", // Development frontend
 ];
 
-app.use(cors({
-  origin: allowedOrigins, // Allow only the specified origins
-  methods: ["POST", "GET", "PUT", "DELETE"], // Allowed methods
-  credentials: true, // Allow cookies and other credentials to be sent with requests
-}));
+app.use(
+  cors({
+    origin: allowedOrigins,
+    methods: ["POST", "GET", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 app.use(cookieParser());
