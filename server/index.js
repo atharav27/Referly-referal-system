@@ -4,7 +4,8 @@ import userRouter from "./routes/user.route.js";
 import authRouter from "./routes/auth.route.js";
 import referalRouter from "./routes/referal.route.js";
 import adminRouter from "./routes/admin.route.js";
-import {connectToDatabase} from "./utility/mongo.js"
+import connectToDatabase from "./utility/mongo.js";
+
 // import listingRouter from "./routes/listing.route.js";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";

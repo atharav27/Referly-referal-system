@@ -31,5 +31,7 @@ const connectToDatabase = async () => {
     process.exit(1); // Exit the process on error
   }
 };
-
-export default connectToDatabase;
+export default async function connectToDatabase() {
+    // Your existing code
+  }
+  
