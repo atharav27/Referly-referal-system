@@ -15,7 +15,7 @@ dotenv.config();
 const app = express();
 
 // Connect to MongoDB
-await connectMongoDB()
+await connectToDatabase()
 
 const allowedOrigins = [
   "https://referly-referal-system-frontend.vercel.app",
