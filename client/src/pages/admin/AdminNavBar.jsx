@@ -22,7 +22,7 @@ const AdminNavBar = () => {
     const getAdmins = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axiosInstance.get("/api/admin/admin", {
+        const response = await axiosInstance.get("/admin/admin", {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
