@@ -23,17 +23,15 @@ connectToDatabase();
 //   credentials: true, // Allows cookies to be sent
 // };
 const allowedOrigins = [
-  "https://referly-referal-system-frontend.vercel.app", // Production frontend
-  "http://localhost:5173", // Development frontend
+  "https://referly-referal-system-frontend.vercel.app", // Your frontend URL
+  "http://localhost:5173", // Local development (if applicable)
 ];
 
-app.use(
-  cors({
-    origin: allowedOrigins,
-    methods: ["POST", "GET", "PUT", "DELETE"],
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: allowedOrigins, // Allow only the specified origins
+  methods: ["POST", "GET", "PUT", "DELETE"], // Allowed methods
+  credentials: true, // Allow cookies and other credentials to be sent with requests
+}));
 
 app.use(express.json());
 app.use(cookieParser());
@@ -45,7 +43,7 @@ app.use("/api/referal", referalRouter);
 app.use("/api/admin", adminRouter);
 
 // Middleware for parsing JSON
-// app.use(express.json());
+app.use(express.json());
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   const message = err.message || "Internal Server Error";
@@ -60,15 +58,23 @@ app.use((err, req, res, next) => {
 });
 
 // Sample route
-app.get("/", (req, res) => {
-  res.send("Welcome to Express Server!");
-});
+// app.get("/", (req, res) => {
+//   res.send("Welcome to Express Server!");
+// });
 
-//declring port number for the server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+// //declring port number for the server
+// const PORT = process.env.PORT || 3000;
+// app.listen(PORT, () => {
+//   console.log(`Server is running on port ${PORT}`);
+// });
 
 // export default app;
-export default serverless(app);
+// export const handler = serverless(app);
+
+// Root Route
+app.get("/", (req, res) => {
+  res.send("Welcome to the Referly API Server!");
+});
+
+// Serverless Handler
+export const handler = serverless(app);

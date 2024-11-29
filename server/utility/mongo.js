@@ -1,42 +1,48 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-dotenv.config(); // Ensure environment variables are loaded at the very beginning
+dotenv.config(); // Load environment variables
 
-let isConnected = false; // Variable to track connection status
+let isConnected = false; // Track connection status
 
-// Get the MongoDB URI from environment variables
-const url =process.env.MONGO_URI;
-console.log("MongoDB URI:", url); // Log to check if it's being loaded
+// MongoDB URI from environment variables
+const url = process.env.MONGO_URI;
 
-// Check if MONGO_URI is not defined
+// Ensure the URI is defined
 if (!url) {
   console.error("MONGO_URI is not defined in .env file");
   throw new Error("MONGO_URI is not defined in .env file");
 }
 
-// Define and export the connection function
+// Database connection function
 const connectToDatabase = async () => {
-  mongoose.set("strictQuery", true); // Mongoose v6+ use this option
-
-  // If already connected, return the existing connection
-  if (isConnected) {
-    console.log("Already connected to the database");
+  mongoose.set("strictQuery", true); // Mongoose v6+ option
+  
+  // Check for an existing connection
+  if (isConnected || mongoose.connection.readyState) {
+    console.log("Reusing existing database connection");
     return;
   }
 
   try {
-    // Use the Mongoose connect method to connect to the database
+    // Connect to MongoDB
     await mongoose.connect(url, {
-      // useNewUrlParser: true,
-      // useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 5000, // Timeout after 5 seconds if no servers are found
+      serverSelectionTimeoutMS: 5000, // Timeout after 5 seconds
     });
-    isConnected = true; // Update the connection status
+    isConnected = true; // Update connection status
     console.log("Connected to Database");
   } catch (error) {
     console.error("Database connection error:", error);
-    process.exit(1); // Exit the process on error
+    process.exit(1); // Exit process on connection error
   }
 };
+
+// Graceful shutdown
+process.on("SIGINT", async () => {
+  if (isConnected) {
+    await mongoose.connection.close();
+    console.log("Database connection closed due to application termination");
+  }
+  process.exit(0);
+});
 
 export default connectToDatabase;
