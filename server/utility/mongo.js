@@ -13,29 +13,38 @@ if (!url) {
   throw new Error("MONGO_URI is not defined in .env file");
 }
 
-// Database connection function
 const connectToDatabase = async () => {
-  mongoose.set("strictQuery", true); // Mongoose v6+ option
+  mongoose.set("strictQuery", true);
   
-  // Check for an existing connection
-  if (isConnected || mongoose.connection.readyState) {
-    console.log("Reusing existing database connection");
+  if (isConnected || mongoose.connection.readyState === 1) {
     return;
   }
 
   try {
-    // Connect to MongoDB
     await mongoose.connect(url, {
-      serverSelectionTimeoutMS: 5000, // Timeout after 5 seconds
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000, // Extended socket timeout
+      maxPoolSize: 10, // Connection pool size
+      connectTimeoutMS: 10000, // Increased connection timeout
+      retryWrites: true,
+      w: "majority"
     });
-    isConnected = true; // Update connection status
+    
+    mongoose.connection.on('error', (err) => {
+      console.error('Mongoose connection error:', err);
+    });
+
+    isConnected = true;
     console.log("Connected to Database");
   } catch (error) {
-    console.error("Database connection error:", error);
-    process.exit(1); // Exit process on connection error
+    console.error("Detailed Database Connection Error:", {
+      message: error.message,
+      name: error.name,
+      stack: error.stack
+    });
+    throw error; // Rethrow for Vercel error handling
   }
 };
-
 // Graceful shutdown
 process.on("SIGINT", async () => {
   if (isConnected) {
