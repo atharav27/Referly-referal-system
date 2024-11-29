@@ -6,44 +6,46 @@ import referalRouter from "./routes/referal.route.js";
 import adminRouter from "./routes/admin.route.js";
 import connectToDatabase from "./utility/mongo.js";
 
-
-  
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import serverless from "serverless-http";
+import serverless from "serverless-http"; // Use serverless-http to wrap Express in serverless function
 import dotenv from "dotenv";
 dotenv.config();
 
 const app = express();
 
-
+// Connect to MongoDB
 connectToDatabase();
-// const corsOptions = {
-//   origin: "http://localhost:5173", // Replace with your frontend's origin
-//   credentials: true, // Allows cookies to be sent
-// };
+
+// CORS configuration for allowed origins
 const allowedOrigins = [
-  "https://referly-referal-system-frontend.vercel.app", // Your frontend URL
-  "http://localhost:5173", // Local development (if applicable)
+  "https://referly-referal-system-frontend.vercel.app", // Frontend URL
+  "http://localhost:5173", // Local dev URL (if applicable)
 ];
 
-app.use(cors({
-  origin: allowedOrigins, // Allow only the specified origins
-  methods: ["POST", "GET", "PUT", "DELETE"], // Allowed methods
-  credentials: true, // Allow cookies and other credentials to be sent with requests
-}));
+app.use(
+  cors({
+    origin: allowedOrigins,
+    methods: ["POST", "GET", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 app.use(cookieParser());
 
-//routes
+// API routes
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/referal", referalRouter);
 app.use("/api/admin", adminRouter);
 
-// Middleware for parsing JSON
-app.use(express.json());
+// Sample route
+app.get("/", (req, res) => {
+  res.send("Welcome to the Express Server!");
+});
+
+// Global error handler
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   const message = err.message || "Internal Server Error";
@@ -57,24 +59,5 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Sample route
-// app.get("/", (req, res) => {
-//   res.send("Welcome to Express Server!");
-// });
-
-// //declring port number for the server
-// const PORT = process.env.PORT || 3000;
-// app.listen(PORT, () => {
-//   console.log(`Server is running on port ${PORT}`);
-// });
-
-// export default app;
-// export const handler = serverless(app);
-
-// Root Route
-app.get("/", (req, res) => {
-  res.send("Welcome to the Referly API Server!");
-});
-
-// Export the serverless handler function
-export const handler = serverless(app);
+// Export serverless handler
+export const handler = serverless(app); // Correct export for ESM
