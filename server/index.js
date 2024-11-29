@@ -60,4 +60,6 @@ app.use((err, req, res, next) => {
 });
 
 // Wrap the app with serverless-http for Vercel deployment
-export const handler = serverless(app);
+ const handler = serverless(app);
+
+ export default handler;
