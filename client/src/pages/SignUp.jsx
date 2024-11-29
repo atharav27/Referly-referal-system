@@ -31,7 +31,7 @@ const SignUp = () => {
 
     try {
       // Sending data to the backend API
-      const response = await axiosInstance.post("https://referly-referal-system-api.vercel.app/api/auth/signup", requestData);
+      const response = await axiosInstance.post("/api/auth/signup", requestData);
 
       // Check for successful signup response
       if (response.status === 201) {
