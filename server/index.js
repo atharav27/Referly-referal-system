@@ -59,5 +59,5 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Export serverless handler
-export default serverless(app); 
+// Wrap the app with serverless-http for Vercel deployment
+export const handler = serverless(app);
