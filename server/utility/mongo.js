@@ -4,6 +4,7 @@ dotenv.config();
 
 let isConnected; // Variable to track connection status
 
+// Define and export the function
 const connectToDatabase = async () => {
   mongoose.set("strictQuery", true);
   const url = process.env.MONGO_URI;
@@ -20,8 +21,6 @@ const connectToDatabase = async () => {
     await mongoose.connect(url, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      // Remove poolSize if you receive an error
-      // Adjust serverSelectionTimeoutMS according to your needs
       serverSelectionTimeoutMS: 5000,
     });
     isConnected = true; // Update the connection status
@@ -31,7 +30,5 @@ const connectToDatabase = async () => {
     process.exit(1); // Exit the process on error
   }
 };
-export default async function connectToDatabase() {
-    // Your existing code
-  }
-  
+
+export default connectToDatabase;
