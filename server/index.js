@@ -4,7 +4,7 @@ import userRouter from "./routes/user.route.js";
 import authRouter from "./routes/auth.route.js";
 import referalRouter from "./routes/referal.route.js";
 import adminRouter from "./routes/admin.route.js";
-import connectToDatabase from "./utility/mongo.js";
+// import connectToDatabase from "./utility/mongo.js";
 
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -15,7 +15,7 @@ dotenv.config();
 const app = express();
 
 // Connect to MongoDB
-await connectToDatabase()
+// await connectToDatabase()
 
 const allowedOrigins = [
   "https://referly-referal-system-frontend.vercel.app",
@@ -44,10 +44,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/referal", referalRouter);
 app.use("/api/admin", adminRouter);
 
-// Sample route
-app.get("/", (req, res) => {
-  res.send("Welcome to the Express Server!");
-});
+
 
 // Global error handler
 app.use((err, req, res, next) => {
@@ -63,7 +60,46 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Wrap the app with serverless-http for Vercel deployment
-const handler = serverless(app);
+// Sample route
+app.get("/", (req, res) => {
+  res.send("Welcome to the Express Server!");
+});
 
-export default handler;
+// Database connection utility
+const connectToDatabase = async () => {
+  const url = process.env.MONGO_URI;
+  
+  if (!url) {
+    console.error("MONGO_URI is not defined");
+    throw new Error("MONGO_URI is not defined");
+  }
+
+  try {
+    await mongoose.connect(url, {
+      maxPoolSize: 10,  // Limit connection pool
+      socketTimeoutMS: 45000,  // Close sockets after 45 seconds
+      serverSelectionTimeoutMS: 5000  // Timeout for finding an available server
+    });
+    console.log("Database connected successfully");
+  } catch (error) {
+    console.error("Database connection error:", error);
+    throw error;  // Rethrow to allow caller to handle
+  }
+};
+
+export default serverless(app, {
+  binary: ['*/*'], // Optional: handle binary responses
+  resolver: async (req, res) => {
+    try {
+      // Ensure database connection before handling request
+      await connectToDatabase();
+    } catch (error) {
+      console.error("Database connection error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Database Connection Failed"
+      });
+      return;
+    }
+  }
+});
