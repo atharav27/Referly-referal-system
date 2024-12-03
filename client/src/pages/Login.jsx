@@ -34,10 +34,7 @@ const Login = () => {
 
     try {
       // Send login request
-      const response = await axiosInstance.post(
-        "/api/auth/signin",
-        requestData
-      );
+      const response = await axiosInstance.post("/api/auth/signin", requestData );
      
       if (response.status === 200) {
         const { token, message } = response.data;
